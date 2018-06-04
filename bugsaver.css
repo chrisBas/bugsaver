@@ -1,0 +1,77 @@
+/* POSITIONING */
+.dev {
+  position: fixed;	
+}
+.bottom-left {
+	bottom: 0px;
+	left: 0px;
+}
+.bottom-right {
+	bottom: 0px;
+	right: 0px;
+}
+
+/* BUTTONS */
+.c-btn {
+	padding: 10px;
+	font-size: 1em;
+	font-weight: bold;
+	border-radius: 14px;
+	border: 1px solid black;
+	background-color: #585858;
+	color: #fff;
+	margin: 16px;
+}
+.c-btn:hover {
+	opacity: 0.5;
+	cursor: pointer;
+}
+.c-btn:focus {
+	outline: none;
+}
+.c-btn:active {
+	opacity: 1;
+}
+
+
+/* MODAL */
+#c-modal {
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: none;
+	background-color: #eaeaea;
+	opacity: 0.7;
+}
+#c-modal-container {
+	width: 40%;
+	min-height: 180px;
+	margin: 0 auto;
+	background: #fff;
+	margin-top: 5%;
+	padding: 20px;
+	border: 1px solid black;
+	border-radius: 4px;
+}
+.c-modal-field label {
+	display: block;
+	margin-top: 8px;
+}
+.c-modal-field input, .c-modal-field select{
+	margin: 2px 12px;
+	min-width: 60%;
+	font-size: 1em;
+}
+.c-form-btn-container {
+	margin-left: 50%;
+}
+.c-form-btn-container button {
+	margin: 14px;
+	font-size: 1em;
+	padding: 4px 8px;
+	border-radius: 4px;
+}
+.c-modal-table {
+	border: 1px solid black;
+}
