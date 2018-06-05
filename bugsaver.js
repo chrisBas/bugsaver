@@ -115,6 +115,24 @@ function createSelectField(labelText, optionTexts) {
 	return div;
 }
 
+function createImageFileField(labelText) {
+	let div = document.createElement('div');
+	div.classList.add('c-modal-field');
+
+	let label = document.createElement('label');
+	label.innerText = labelText;
+	div.appendChild(label);
+
+	let input = document.createElement('input');
+	input.type = "file";
+	input.name = labelText.split(" ").join("").toLowerCase();
+	input.accept = "image/*";
+	input.multiple = true;
+	div.appendChild(input);
+	
+	return div;	
+}
+
 function addBug() {
 	let form = event.target;
 	let inputs = form.getElementsByTagName("input");
@@ -123,6 +141,13 @@ function addBug() {
 
 	for(var i=0; i<inputs.length; i++) {
 		content[inputs[i].name] = inputs[i].value;
+		/* TODO: for images, we would ideally want to save the image to a file (or blob/etc..) but not download until later */
+		// if(inputs[i].type == "file") {
+		// 	content[inputs[i].name] = inputs[i].baseURI;
+		// 	console.log(inputs[i].baseURI);
+		// } else {
+		// 	content[inputs[i].name] = inputs[i].value;
+		// }
 	}
 	for(var i=0; i<selects.length; i++) {
 		content[selects[i].name] = selects[i].value;
@@ -151,10 +176,13 @@ function addBugModal() {
 
 	let form = document.createElement('form');
 	form.onsubmit = addBug;
-	form.appendChild( createTextField("Issue") );
+	form.appendChild( createSelectField("Severity", ["Minor", "Medium", "Major"]) );
+	form.appendChild( createSelectField("Issue", ["Misspelling", "Functionality", "UI", "UX", "Other"]) );
+	form.appendChild( createTextField( "Date", (new Date()).toLocaleString("en-US") ) );
 	form.appendChild( createTextField("Expected") );
 	form.appendChild( createTextField("Actual", window.getSelection().toString()) );
-	form.appendChild( createSelectField("Severity", ["Minor", "Medium", "Major"]) );
+	/* TODO: uncomment the following if adding images */
+	//form.appendChild( createImageFileField("Images"));
 	form.appendChild(btnDiv);
 	container.appendChild(form);
 
@@ -210,6 +238,9 @@ function exportBugsModal() {
 		th.innerText = key;
 		headRow.appendChild(th);
 	}
+	let deleteHeader = document.createElement('th');
+	deleteHeader.innerText = "delete";
+	headRow.appendChild(deleteHeader);
 	thead.appendChild(headRow);
 	let tbody = document.createElement('tbody');
 	for(var i=0; i<contents.length; i++) {
@@ -219,6 +250,14 @@ function exportBugsModal() {
 			td.innerText = contents[i][keys[j]];
 			tr.appendChild(td);
 		}
+		let td = document.createElement('td');
+		let deleteBtn = document.createElement('button');
+		deleteBtn.innerText = "-";
+		deleteBtn.addEventListener('click', deleteContent)
+		deleteBtn.contentIdx = i;
+		deleteBtn.type = "button";
+		td.appendChild(deleteBtn);
+		tr.appendChild(td);
 		tbody.appendChild(tr);
 	}
 	table.appendChild(thead);
@@ -234,15 +273,34 @@ function exportBugsModal() {
 		toggleModal();
 }
 
-function exportBugs() {
-	// var text = "Issue,Severity,Current State,Desired State"
-	// 	+ "\r\nIncorrect Text,3,Hello Word,Hello World";
+function deleteContent() {
+	if(event.target.contentIdx != null) {
+		let parent = event.target;
+		while(((parent = parent.parentElement) != null) && !(parent.tagName == "TR"));
+		parent.parentElement.removeChild(parent);
+		contents.splice(event.target.contentIdx, 1)
+	}
+}
 
-	// var element = document.createElement('a');
-	// element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURI(text));
-	// element.setAttribute('download', 'bugs.csv');
-	// element.style.display = 'none';
-	// document.body.appendChild(element);
-	// element.click();
-	// document.body.removeChild(element);
+function exportBugs() {
+	let keys = Object.keys(contents[0]);
+	var text = "index,"+keys.join(",");
+	contents.forEach(function(el,n) {
+		var temp = [n];
+		for(const key of keys) {
+			temp.push(el[key].replace(/,/g, ';'));
+		}
+		text += "\r\n"+temp.join(",");
+	});
+
+	/* TODO: ideally we would want to zip this up along with image assets */
+	var anchor = document.createElement('a');
+	anchor.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURI(text));
+	anchor.setAttribute('download', 'bugs.csv');
+	anchor.style.display = 'none';
+	document.body.appendChild(anchor);
+	anchor.click();
+	document.body.removeChild(anchor);
+	toggleModal(true);
+	return false;
 }

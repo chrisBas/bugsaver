@@ -45,7 +45,7 @@
 	opacity: 0.7;
 }
 #c-modal-container {
-	width: 40%;
+	width: 60%;
 	min-height: 180px;
 	margin: 0 auto;
 	background: #fff;
@@ -64,7 +64,7 @@
 	font-size: 1em;
 }
 .c-form-btn-container {
-	margin-left: 50%;
+	margin-left: 60%;
 }
 .c-form-btn-container button {
 	margin: 14px;
@@ -73,5 +73,15 @@
 	border-radius: 4px;
 }
 .c-modal-table {
+	border-collapse: collapse;
+}
+.c-modal-table, .c-modal-table th, .c-modal-table td{
 	border: 1px solid black;
+}
+.c-modal-table th, .c-modal-table td{
+	height: 34px;
+	text-align: left;
+	min-width: 110px;
+	padding-left: 8px;
+	padding-right: 8px;
 }
